@@ -291,7 +291,8 @@ class TinyGsmSim5360 : public TinyGsmModem<TinyGsmSim5360>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     gprsDisconnect();  // Make sure we're not connected first
 
@@ -306,14 +307,28 @@ class TinyGsmSim5360 : public TinyGsmModem<TinyGsmSim5360>,
     }
 
     // Define external PDP context 1
-    sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"', ",\"0.0.0.0\",0,0");
-    waitResponse();
+    
+    if (ip && strlen(ip) > 0) {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), ip, '"');
+      waitResponse(); 
+    } else {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
+      waitResponse();      
+    }
 
     // The CGSOCKCONT commands define the "embedded" PDP context for TCP/IP
 
-    // Define the socket PDP context
-    sendAT(GF("+CGSOCKCONT=1,\"IP\",\""), apn, '"');
-    waitResponse();
+    if (ip && strlen(ip) > 0) {
+      // Define the PDP context
+      sendAT(GF("+CGSOCKCONT=1,\"IP\",\""), ip, '"');
+      waitResponse(); 
+    } else {
+      // Define the PDP context
+      sendAT(GF("+CGSOCKCONT=1,\"IP\",\""), apn, '"');
+      waitResponse();      
+    }
 
     // Set the embedded authentication
     if (user && strlen(user) > 0) {

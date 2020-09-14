@@ -304,7 +304,8 @@ class TinyGsmSim7000 : public TinyGsmModem<TinyGsmSim7000>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     gprsDisconnect();
 
@@ -324,10 +325,16 @@ class TinyGsmSim7000 : public TinyGsmModem<TinyGsmSim7000>,
       sendAT(GF("+SAPBR=3,1,\"PWD\",\""), pwd, '"');  // Set the password
       waitResponse();
     }
-
-    // Define the PDP context
-    sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
-    waitResponse();
+    
+    if (ip && strlen(ip) > 0) {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), ip, '"');
+      waitResponse(); 
+    } else {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
+      waitResponse();      
+    }
 
     // Activate the PDP context
     sendAT(GF("+CGACT=1,1"));

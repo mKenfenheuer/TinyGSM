@@ -49,9 +49,10 @@ class TinyGsmGPRS {
   /*
    * GPRS functions
    */
-  bool gprsConnect(const char* apn, const char* user = NULL,
+  bool gprsConnect(const char* apn, const char* ip = NULL,
+                   const char* user = NULL,
                    const char* pwd = NULL) {
-    return thisModem().gprsConnectImpl(apn, user, pwd);
+    return thisModem().gprsConnectImpl(apn, ip, user, pwd);
   }
   bool gprsDisconnect() {
     return thisModem().gprsDisconnectImpl();

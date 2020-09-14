@@ -218,7 +218,8 @@ class TinyGsmM590 : public TinyGsmModem<TinyGsmM590>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     gprsDisconnect();
 

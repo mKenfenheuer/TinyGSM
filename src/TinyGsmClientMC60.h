@@ -248,7 +248,8 @@ class TinyGsmMC60 : public TinyGsmModem<TinyGsmMC60>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     gprsDisconnect();
 
@@ -261,9 +262,16 @@ class TinyGsmMC60 : public TinyGsmModem<TinyGsmMC60>,
            GF("\""));
     if (waitResponse() != 1) { return false; }
 
-    // Define PDP context - is this necessary?
-    sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
-    waitResponse();
+    
+    if (ip && strlen(ip) > 0) {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), ip, '"');
+      waitResponse(); 
+    } else {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
+      waitResponse();      
+    }
 
     // Activate PDP context - is this necessary?
     sendAT(GF("+CGACT=1,1"));

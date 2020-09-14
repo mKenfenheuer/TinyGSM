@@ -292,7 +292,8 @@ class TinyGsmUBLOX : public TinyGsmModem<TinyGsmUBLOX>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     // gprsDisconnect();
 
@@ -323,8 +324,17 @@ class TinyGsmUBLOX : public TinyGsmModem<TinyGsmUBLOX>,
       waitResponse();
     }
 
-    sendAT(GF("+UPSD=0,7,\"0.0.0.0\""));  // Dynamic IP on PSD profile 0
-    waitResponse();
+
+    if (ip && strlen(ip) > 0) {
+      // Define the PDP context
+      sendAT(GF("+UPSD=0,7,\""), ip, '"');  // Static IP on PSD profile 0
+      waitResponse(); 
+    } else {
+      // Define the PDP context
+      sendAT(GF("+UPSD=0,7,\"0.0.0.0\""));  // Dynamic IP on PSD profile 0
+    waitResponse();      
+    }
+    
 
     // Packet switched data action
     // AT+UPSDA=<profile_id>,<action>

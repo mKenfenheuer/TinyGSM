@@ -779,7 +779,8 @@ class TinyGsmXBee : public TinyGsmModem<TinyGsmXBee>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     bool success = true;
     if (user && strlen(user) > 0) {

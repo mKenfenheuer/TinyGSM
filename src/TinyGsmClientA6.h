@@ -219,7 +219,8 @@ class TinyGsmA6 : public TinyGsmModem<TinyGsmA6>,
    * GPRS functions
    */
  protected:
-  bool gprsConnectImpl(const char* apn, const char* user = NULL,
+  bool gprsConnectImpl(const char* apn, const char* ip = NULL,
+                       const char* user = NULL,
                        const char* pwd = NULL) {
     gprsDisconnect();
 
@@ -227,9 +228,16 @@ class TinyGsmA6 : public TinyGsmModem<TinyGsmA6>,
     if (waitResponse(60000L) != 1) { return false; }
 
     // TODO(?): wait AT+CGATT?
-
-    sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
-    waitResponse();
+    
+    if (ip && strlen(ip) > 0) {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), ip, '"');
+      waitResponse(); 
+    } else {
+      // Define the PDP context
+      sendAT(GF("+CGDCONT=1,\"IP\",\""), apn, '"');
+      waitResponse();      
+    }
 
     if (!user) user = "";
     if (!pwd) pwd = "";
